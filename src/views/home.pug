@@ -10,8 +10,11 @@ html(lang="ko")
     header 
       h1 Moom!
     main 
+      form#nick
+        input(type="text", placeholder="choose a nickname", repuire)
+        button Save
       ul
-      form
-        input(type="text", placeholder="write amessage", repuire)
+      form#message
+        input(type="text", placeholder="write a message", repuire)
         button Send
     script(src="/public/js/app.js")
