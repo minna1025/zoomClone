@@ -17,13 +17,13 @@ const httpServer = http.createServer(app);
 const wsServer = new Server(httpServer);
 
 wsServer.on("connection", (socket) => {
-  console.log(socket.id);
   socket.onAny((event) => {
     console.log(`Socket event: ${event}`);
   });
-  socket.on("enter_room", (roomname, done) => {
-    socket.join(roomname);
+  socket.on("enter_room", (roomName, done) => {
+    socket.join(roomName);
     done();
+    socket.to(roomName).emit("welcome");
   });
 });
 
