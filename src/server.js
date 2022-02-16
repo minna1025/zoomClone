@@ -17,11 +17,13 @@ const httpServer = http.createServer(app);
 const wsServer = new Server(httpServer);
 
 wsServer.on("connection", (socket) => {
-  socket.on("enter_room", (msg, done) => {
-    setTimeout(() => {
-      done("안녕 난 서버야!"); // back에서 실행하고 front에 보여주는 함수
-    }, 10000);
-    console.log(msg);
+  console.log(socket.id);
+  socket.onAny((event) => {
+    console.log(`Socket event: ${event}`);
+  });
+  socket.on("enter_room", (roomname, done) => {
+    socket.join(roomname);
+    done();
   });
 });
 
