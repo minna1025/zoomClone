@@ -86,8 +86,17 @@ function handleCameraBtn() {
 
 cameraBtn.addEventListener("click", handleCameraBtn);
 
-function handleCameraChange() {
-  getMedia(camerasSelect.value);
+async function handleCameraChange() {
+  await getMedia(camerasSelect.value);
+  if (myPeerConnection) {
+    // console.log(myPeerConnection.getSenders());
+    const videoTrack = myStream.getVideoTracks()[0];
+    const videoSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "video");
+    console.log(videoSender);
+    videoSender.replaceTrack(videoTrack);
+  }
 }
 
 camerasSelect.addEventListener("input", handleCameraChange);
