@@ -13,6 +13,7 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 let myPeerConnection;
+let myDataChannel;
 
 async function getCameras() {
   try {
@@ -126,6 +127,12 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket code
 // 초대자
 socket.on("welcome", async () => {
+  // 1. 먼저 연결된 피어가 dataChannel을 정의
+  myDataChannel = myPeerConnection.createDataChannel("chat");
+  myDataChannel.addEventListener("message", (event) => {
+    console.log(event.data);
+  });
+  console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   console.log("sent the offer");
@@ -134,6 +141,13 @@ socket.on("welcome", async () => {
 
 // 방문자
 socket.on("offer", async (offer) => {
+  // 2. 두번째 연결된 피어의 dataChannel정의
+  myPeerConnection.addEventListener("datachannel", (event) => {
+    myDataChannel = event.channel;
+    myDataChannel.addEventListener("message", (event) => {
+      console.log(event.data);
+    });
+  });
   console.log("received the offer");
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();
@@ -154,19 +168,20 @@ socket.on("ice", (ice) => {
 
 //RTC Code
 function makeConnection() {
-  myPeerConnection = new RTCPeerConnection({
-    iceServers: [
-      {
-        urls: [
-          "stun.l.google.com:19302",
-          "stun1.l.google.com:19302",
-          "stun2.l.google.com:19302",
-          "stun3.l.google.com:19302",
-          "stun4.l.google.com:19302",
-        ],
-      },
-    ],
-  });
+  myPeerConnection = new RTCPeerConnection();
+  //   {
+  //   iceServers: [
+  //     {
+  //       urls: [
+  //         "stun.l.google.com:19302",
+  //         "stun1.l.google.com:19302",
+  //         "stun2.l.google.com:19302",
+  //         "stun3.l.google.com:19302",
+  //         "stun4.l.google.com:19302",
+  //       ],
+  //     },
+  //   ],
+  // }
   myPeerConnection.addEventListener("icecandidate", handleIce);
   myPeerConnection.addEventListener("addstream", handleAddStream);
   myStream
