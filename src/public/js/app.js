@@ -22,22 +22,26 @@ async function getMedia() {
 
 getMedia();
 
-muteBtn.addEventListener("click", () => {
-  if (!mute) {
+function handleMuteBtn() {
+  if (!muted) {
     muteBtn.innerText = "Unmute";
     muted = true;
   } else {
     muteBtn.innerText = "Mute";
     muted = false;
   }
-});
+}
 
-cameraBtn.addEventListener("click", () => {
-  if (!cameraOff) {
+muteBtn.addEventListener("click", handleMuteBtn);
+
+function handleCameraBtn() {
+  if (cameraOff) {
     cameraBtn.innerText = "Turn Camera On";
     cameraOff = false;
   } else {
     cameraBtn.innerText = "Turn Camera Off";
     cameraOff = true;
   }
-});
+}
+
+cameraBtn.addEventListener("click", handleCameraBtn);
